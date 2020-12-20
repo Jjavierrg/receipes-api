@@ -21,6 +21,7 @@ create table ingredient (
   quantity                      integer not null,
   food_id                       bigint,
   measure_id                    bigint,
+  recipe_id                     bigint,
   constraint pk_ingredient primary key (id)
 );
 
@@ -33,7 +34,7 @@ create table measure (
 create table recipe (
   id                            bigint auto_increment not null,
   title                         varchar(255),
-  description                   varchar(255),
+  description                   TEXT,
   constraint pk_recipe primary key (id)
 );
 
@@ -41,12 +42,6 @@ create table recipe_category (
   recipe_id                     bigint not null,
   category_id                   bigint not null,
   constraint pk_recipe_category primary key (recipe_id,category_id)
-);
-
-create table recipe_ingredient (
-  recipe_id                     bigint not null,
-  ingredient_id                 bigint not null,
-  constraint pk_recipe_ingredient primary key (recipe_id,ingredient_id)
 );
 
 create table recipe_photo (
@@ -60,14 +55,6 @@ create table recipe_photo (
   constraint pk_recipe_photo primary key (id)
 );
 
-create table user (
-  id                            bigint auto_increment not null,
-  name                          varchar(255),
-  nick                          varchar(255),
-  age                           integer,
-  constraint pk_user primary key (id)
-);
-
 create index ix_category_parent_id on category (parent_id);
 alter table category add constraint fk_category_parent_id foreign key (parent_id) references category (id) on delete restrict on update restrict;
 
@@ -77,17 +64,14 @@ alter table ingredient add constraint fk_ingredient_food_id foreign key (food_id
 create index ix_ingredient_measure_id on ingredient (measure_id);
 alter table ingredient add constraint fk_ingredient_measure_id foreign key (measure_id) references measure (id) on delete restrict on update restrict;
 
+create index ix_ingredient_recipe_id on ingredient (recipe_id);
+alter table ingredient add constraint fk_ingredient_recipe_id foreign key (recipe_id) references recipe (id) on delete restrict on update restrict;
+
 create index ix_recipe_category_recipe on recipe_category (recipe_id);
 alter table recipe_category add constraint fk_recipe_category_recipe foreign key (recipe_id) references recipe (id) on delete restrict on update restrict;
 
 create index ix_recipe_category_category on recipe_category (category_id);
 alter table recipe_category add constraint fk_recipe_category_category foreign key (category_id) references category (id) on delete restrict on update restrict;
-
-create index ix_recipe_ingredient_recipe on recipe_ingredient (recipe_id);
-alter table recipe_ingredient add constraint fk_recipe_ingredient_recipe foreign key (recipe_id) references recipe (id) on delete restrict on update restrict;
-
-create index ix_recipe_ingredient_ingredient on recipe_ingredient (ingredient_id);
-alter table recipe_ingredient add constraint fk_recipe_ingredient_ingredient foreign key (ingredient_id) references ingredient (id) on delete restrict on update restrict;
 
 alter table recipe_photo add constraint fk_recipe_photo_recipe foreign key (recipe) references recipe (id) on delete restrict on update restrict;
 
@@ -103,17 +87,14 @@ drop index if exists ix_ingredient_food_id;
 alter table ingredient drop constraint if exists fk_ingredient_measure_id;
 drop index if exists ix_ingredient_measure_id;
 
+alter table ingredient drop constraint if exists fk_ingredient_recipe_id;
+drop index if exists ix_ingredient_recipe_id;
+
 alter table recipe_category drop constraint if exists fk_recipe_category_recipe;
 drop index if exists ix_recipe_category_recipe;
 
 alter table recipe_category drop constraint if exists fk_recipe_category_category;
 drop index if exists ix_recipe_category_category;
-
-alter table recipe_ingredient drop constraint if exists fk_recipe_ingredient_recipe;
-drop index if exists ix_recipe_ingredient_recipe;
-
-alter table recipe_ingredient drop constraint if exists fk_recipe_ingredient_ingredient;
-drop index if exists ix_recipe_ingredient_ingredient;
 
 alter table recipe_photo drop constraint if exists fk_recipe_photo_recipe;
 
@@ -129,9 +110,5 @@ drop table if exists recipe;
 
 drop table if exists recipe_category;
 
-drop table if exists recipe_ingredient;
-
 drop table if exists recipe_photo;
-
-drop table if exists user;
 

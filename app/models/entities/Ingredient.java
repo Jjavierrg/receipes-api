@@ -13,6 +13,6 @@ public class Ingredient extends BaseModel {
     @ManyToOne()
     private Measure measure;
 
-    @ManyToMany(mappedBy = "ingredients", fetch = FetchType.LAZY)
-    private List<Recipe> recipes;
+    @ManyToOne()
+    private Recipe recipe;
 }

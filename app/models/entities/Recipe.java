@@ -6,12 +6,14 @@ import java.util.List;
 @Entity
 public class Recipe extends BaseModel {
     private String title;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Category> categories;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="recipe")
     private List<Ingredient> ingredients;
 
     @OneToOne(mappedBy = "recipe")
