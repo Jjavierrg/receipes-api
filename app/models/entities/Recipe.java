@@ -5,17 +5,17 @@ import java.util.List;
 
 @Entity
 public class Recipe extends BaseModel {
-    private String title;
+    public String title;
 
     @Column(columnDefinition = "TEXT")
-    private String description;
+    public String description;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    private List<Category> categories;
+    public List<Category> categories;
 
     @OneToMany(mappedBy="recipe")
-    private List<Ingredient> ingredients;
+    public List<Ingredient> ingredients;
 
     @OneToOne(mappedBy = "recipe")
-    private RecipePhoto photo;
+    public RecipePhoto photo;
 }

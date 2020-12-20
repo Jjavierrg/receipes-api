@@ -1,18 +1,19 @@
-# --- Created by Ebean DDL
-# To stop Ebean DDL generation, remove this comment and start using Evolutions
-
-# --- !Ups
-
 create table category (
   id                            bigint auto_increment not null,
   name                          varchar(255),
   parent_id                     bigint,
+  version                       bigint not null,
+  creation_date                 timestamp not null,
+  update_date                   timestamp not null,
   constraint pk_category primary key (id)
 );
 
 create table food (
   id                            bigint auto_increment not null,
   name                          varchar(255),
+  version                       bigint not null,
+  creation_date                 timestamp not null,
+  update_date                   timestamp not null,
   constraint pk_food primary key (id)
 );
 
@@ -22,12 +23,18 @@ create table ingredient (
   food_id                       bigint,
   measure_id                    bigint,
   recipe_id                     bigint,
+  version                       bigint not null,
+  creation_date                 timestamp not null,
+  update_date                   timestamp not null,
   constraint pk_ingredient primary key (id)
 );
 
 create table measure (
   id                            bigint auto_increment not null,
   description                   varchar(255),
+  version                       bigint not null,
+  creation_date                 timestamp not null,
+  update_date                   timestamp not null,
   constraint pk_measure primary key (id)
 );
 
@@ -35,6 +42,9 @@ create table recipe (
   id                            bigint auto_increment not null,
   title                         varchar(255),
   description                   TEXT,
+  version                       bigint not null,
+  creation_date                 timestamp not null,
+  update_date                   timestamp not null,
   constraint pk_recipe primary key (id)
 );
 
@@ -51,6 +61,9 @@ create table recipe_photo (
   width                         integer not null,
   height                        integer not null,
   recipe                        bigint,
+  version                       bigint not null,
+  creation_date                 timestamp not null,
+  update_date                   timestamp not null,
   constraint uq_recipe_photo_recipe unique (recipe),
   constraint pk_recipe_photo primary key (id)
 );

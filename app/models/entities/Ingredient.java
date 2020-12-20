@@ -1,18 +1,21 @@
 package models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 public class Ingredient extends BaseModel {
-    private int quantity;
+    public int quantity;
 
     @ManyToOne()
-    private Food food;
+    public Food food;
 
     @ManyToOne()
-    private Measure measure;
+    public Measure measure;
 
+    @JsonIgnore()
     @ManyToOne()
-    private Recipe recipe;
+    public Recipe recipe;
 }

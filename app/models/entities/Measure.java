@@ -1,12 +1,15 @@
 package models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 public class Measure extends BaseModel {
-    private String description;
+    public String description;
 
+    @JsonIgnore()
     @OneToMany(mappedBy="measure", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Ingredient> ingredients;
+    public List<Ingredient> ingredients;
 }

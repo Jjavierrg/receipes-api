@@ -7,7 +7,7 @@ import java.util.List;
 
 public class BaseRepository<T extends BaseModel> {
     private final Class<T> type;
-    private final Finder<Long, T> finder;
+    public final Finder<Long, T> finder;
 
     public BaseRepository(Class<T> type) {
         this.type = type;
@@ -15,5 +15,5 @@ public class BaseRepository<T extends BaseModel> {
     }
 
     public T getById(Long id) { return finder.byId(id); }
-    public List<T> findAll() { return finder.query().findList(); }
+    public List<T> findAll() { return finder.all(); }
 }

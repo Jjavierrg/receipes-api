@@ -1,18 +1,21 @@
 package models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 public class Category extends BaseModel {
-    private String name;
+    public String name;
 
+    @JsonIgnore()
     @ManyToOne()
-    private Category parent;
+    public Category parent;
 
     @OneToMany(mappedBy="parent")
-    private List<Category> subCategories;
+    public List<Category> subCategories;
 
+    @JsonIgnore()
     @ManyToMany(mappedBy = "categories", cascade= CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Recipe> recipes;
+    public List<Recipe> recipes;
 }
