@@ -1,24 +1,12 @@
 package controllers;
 
-import models.entities.*;
-import models.repositories.BaseRepository;
-import play.data.FormFactory;
-import play.libs.Json;
+import models.entities.Recipe;
 import play.mvc.*;
 
-import javax.inject.Inject;
-import java.util.Optional;
+public class RecipeController extends BaseController<Recipe> {
 
-
-public class RecipeController extends Controller {
-
-    @Inject
-    private FormFactory formFactory;
-
-    public Result getAllRecipes() {
-        var repository = new BaseRepository<>(Recipe.class);
-        var recipes = repository.findAll();
-        return ok(Json.toJson(recipes));
+    protected RecipeController() {
+        super(Recipe.class);
     }
 
 //    public Result GetUser(int id) {

@@ -4,7 +4,25 @@
 
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
-GET     /recipes                    controllers.RecipeController.getAllRecipes
+
+GET     /recipes                    controllers.RecipeController.getAll(request: Request)
+GET     /recipe/:id                 controllers.RecipeController.getSingle(request: Request, id: Long)
+POST    /recipe                     controllers.RecipeController.create(request: Request)
+PUT     /recipe/:id                 controllers.RecipeController.update(request: Request, id: Long)
+DELETE  /recipe/:id                 controllers.RecipeController.delete(request: Request, id: Long)
+
+GET     /foods                      controllers.FoodController.getAll(request: Request)
+GET     /food/:id                   controllers.FoodController.getSingle(request: Request, id: Long)
+POST    /food                       controllers.FoodController.create(request: Request)
+PUT     /food/:id                   controllers.FoodController.update(request: Request, id: Long)
+DELETE  /food/:id                   controllers.FoodController.delete(request: Request, id: Long)
+
+GET     /categories                 controllers.CategoryController.getAll(request: Request)
+GET     /category/:id               controllers.CategoryController.getSingle(request: Request, id: Long)
+POST    /category                   controllers.CategoryController.create(request: Request)
+PUT     /category/:id               controllers.CategoryController.update(request: Request, id: Long)
+DELETE  /category/:id               controllers.CategoryController.delete(request: Request, id: Long)
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
