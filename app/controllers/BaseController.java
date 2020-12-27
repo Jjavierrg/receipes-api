@@ -70,6 +70,26 @@ public class BaseController<T extends BaseModel> extends Controller {
         return noContent();
     }
 
+    public Result updatePartial(Http.Request request, long id) {
+        if (id <= 0)
+            return badRequest();
+
+        if (!this.repository.existId(id))
+            return notFound();
+
+        var form = this.formFactory.form(this.type).bindFromRequest(request);
+        var entity = form.get();
+
+        if (form.hasErrors())
+            return badRequest(form.errorsAsJson());
+
+        if (entity.id != id)
+            return badRequest();
+
+        var result = this.repository.updatePartial(entity, id);
+        return noContent();
+    }
+
     public Result delete(Http.Request request, long id) {
         if (id <= 0)
             return badRequest();

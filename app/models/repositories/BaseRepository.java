@@ -3,6 +3,10 @@ package models.repositories;
 import io.ebean.Finder;
 import models.entities.BaseModel;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BaseRepository<T extends BaseModel> {
@@ -26,5 +30,32 @@ public class BaseRepository<T extends BaseModel> {
         var result = this.finder.db().delete(entity);
         entity = null;
         return result;
+    }
+
+    public T updatePartial(T entity, Long id) {
+        if (!this.existId(id))
+            return null;
+
+        List<Field> fields = new ArrayList<>();
+        Class<?> cls = entity.getClass();
+
+        do {
+            fields.addAll(Arrays.asList(cls.getDeclaredFields()));
+            cls = cls.getSuperclass();
+        } while (cls != BaseModel.class);
+
+        for (Field field:fields) {
+            if (Modifier.isStatic(field.getModifiers()))
+                continue;
+
+            try {
+                if (!field.canAccess(entity)  || field.get(entity) == null)
+                    entity.markPropertyUnset(field.getName());
+            } catch (Exception e) {
+                return null;
+            }
+        }
+
+        return this.update(entity);
     }
 }
