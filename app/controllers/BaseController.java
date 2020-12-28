@@ -1,7 +1,9 @@
 package controllers;
 
+import controllers.dto.BaseDto;
 import models.entities.BaseModel;
 import models.repositories.BaseRepository;
+import play.api.http.MediaRange;
 import play.data.FormFactory;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -9,23 +11,27 @@ import play.mvc.Http;
 import play.mvc.Result;
 
 import javax.inject.Inject;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
-public class BaseController<T extends BaseModel> extends Controller {
+public abstract class BaseController<T extends BaseModel, TDto extends BaseDto> extends Controller {
 
     @Inject
     protected FormFactory formFactory;
     protected BaseRepository<T> repository;
     private Class<T> type;
+    private Class<TDto> typeDto;
 
-    protected BaseController(Class<T> type) {
+    protected BaseController(Class<T> type, Class<TDto> typeDto) {
         this.type = type;
+        this.typeDto = typeDto;
         this.repository = new BaseRepository<>(type);
     }
 
     public Result getAll(Http.Request request) {
         var entities = this.repository.findAll();
-        return ok(Json.toJson(entities));
+        return this.getResult(request, entities, OK);
     }
 
     public Result getSingle(Http.Request request, long id) {
@@ -36,18 +42,29 @@ public class BaseController<T extends BaseModel> extends Controller {
         if (entity == null)
             return notFound();
 
-        return ok(Json.toJson(entity));
+        return this.getResult(request, entity, OK);
     }
 
     public Result create(Http.Request request) {
-        var form = this.formFactory.form(this.type).bindFromRequest(request);
-        var entity = form.get();
+        var form = this.formFactory.form(this.typeDto).bindFromRequest(request);
+        var dto = form.get();
 
         if (form.hasErrors())
             return badRequest(form.errorsAsJson());
 
-        var result = this.repository.insert(entity);
-        return created(Json.toJson(result));
+        var transaction = this.repository.beginTransaction();
+        try {
+            var entity = this.toEntity(dto);
+            var result = this.repository.insert(entity);
+            transaction.commit();
+
+            return this.getResult(request, result, CREATED);
+        } catch (Exception e) {
+            transaction.rollback();
+            return internalServerError(e.getMessage());
+        } finally {
+            transaction.end();
+        }
     }
 
     public Result update(Http.Request request, long id) {
@@ -57,17 +74,28 @@ public class BaseController<T extends BaseModel> extends Controller {
         if (!this.repository.existId(id))
             return notFound();
 
-        var form = this.formFactory.form(this.type).bindFromRequest(request);
-        var entity = form.get();
+        var form = this.formFactory.form(this.typeDto).bindFromRequest(request);
+        var dto = form.get();
 
         if (form.hasErrors())
             return badRequest(form.errorsAsJson());
 
-        if (entity.id != id)
+        if (dto.id != id)
             return badRequest();
 
-        this.repository.update(entity);
-        return noContent();
+        var transaction = this.repository.beginTransaction();
+        try {
+            var entity = this.toEntity(dto);
+            this.repository.update(entity);
+            transaction.commit();
+
+            return noContent();
+        } catch (Exception e) {
+            transaction.rollback();
+            return internalServerError(e.getMessage());
+        } finally {
+            transaction.end();
+        }
     }
 
     public Result updatePartial(Http.Request request, long id) {
@@ -77,17 +105,28 @@ public class BaseController<T extends BaseModel> extends Controller {
         if (!this.repository.existId(id))
             return notFound();
 
-        var form = this.formFactory.form(this.type).bindFromRequest(request);
-        var entity = form.get();
+        var form = this.formFactory.form(this.typeDto).bindFromRequest(request);
+        var dto = form.get();
 
         if (form.hasErrors())
             return badRequest(form.errorsAsJson());
 
-        if (entity.id != id)
+        if (dto.id != id)
             return badRequest();
 
-        var result = this.repository.updatePartial(entity, id);
-        return noContent();
+        var transaction = this.repository.beginTransaction();
+        try {
+            var entity = this.toEntity(dto);
+            var result = this.repository.updatePartial(entity, id);
+            transaction.commit();
+
+            return noContent();
+        } catch (Exception e) {
+            transaction.rollback();
+            return internalServerError(e.getMessage());
+        } finally {
+            transaction.end();
+        }
     }
 
     public Result delete(Http.Request request, long id) {
@@ -97,9 +136,58 @@ public class BaseController<T extends BaseModel> extends Controller {
         if (!this.repository.existId(id))
             return notFound();
 
-        if (!this.repository.deleteById(id))
-            return internalServerError();
+        var transaction = this.repository.beginTransaction();
+        try {
+            if (!this.repository.deleteById(id))
+                throw new Exception("Cannot delete selected entity");
 
-        return noContent();
+            transaction.commit();
+            return noContent();
+        } catch (Exception e) {
+            transaction.rollback();
+            return internalServerError(e.getMessage());
+        } finally {
+            transaction.end();
+        }
+    }
+
+    protected abstract TDto toDto(T entity);
+    protected abstract T toEntity(TDto dto);
+
+    protected List<TDto> toDto(List<T> entities) {
+        return entities.stream().map(this::toDto).collect(Collectors.toList());
+    }
+
+    protected List<T> toEntity(List<TDto> entities) {
+        return entities.stream().map(this::toEntity).collect(Collectors.toList());
+    }
+
+    protected Result getResult(Http.Request request, List<T> entities, int statusCode) {
+        var dtos = this.toDto(entities);
+        return this.getResultInternal(request, dtos, statusCode);
+    }
+
+    protected Result getResult(Http.Request request, T entity, int statusCode) {
+        var dto = this.toDto(entity);
+        return this.getResultInternal(request, dto, statusCode);
+    }
+
+    private Result getResultInternal(Http.Request request, Object data, int statusCode) {
+        var type = this.getFirstAcceptedType(request);
+        if (type.equals("application/xml"))
+            status(statusCode);
+
+        return status(statusCode, Json.toJson(data));
+    }
+
+    private String getFirstAcceptedType(Http.Request request) {
+        for (MediaRange type: request.acceptedTypes()) {
+            if (type.accepts("application/xml"))
+                return "application/xml";
+            else if (type.accepts("application/json"))
+                return "application/json";
+        }
+
+        return "application/json";
     }
 }

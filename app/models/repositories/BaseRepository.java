@@ -1,6 +1,7 @@
 package models.repositories;
 
 import io.ebean.Finder;
+import io.ebean.Transaction;
 import models.entities.BaseModel;
 
 import java.lang.reflect.Field;
@@ -18,7 +19,9 @@ public class BaseRepository<T extends BaseModel> {
         this.finder= new Finder<>(type);
     }
 
+    public Transaction beginTransaction() { return this.finder.db().beginTransaction(); }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean existId(Long id) { return finder.query().where().eq("id", id).exists(); }
     public T getById(Long id) { return finder.byId(id); }
     public List<T> findAll() { return finder.all(); }
@@ -28,6 +31,7 @@ public class BaseRepository<T extends BaseModel> {
     public boolean deleteById(Long id) { this.finder.deleteById(id); return true; }
     public boolean delete(T entity) {
         var result = this.finder.db().delete(entity);
+        //noinspection UnusedAssignment
         entity = null;
         return result;
     }

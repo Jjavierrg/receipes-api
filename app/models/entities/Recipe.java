@@ -13,9 +13,9 @@ public class Recipe extends BaseModel {
     @ManyToMany(cascade = CascadeType.ALL)
     public List<Category> categories;
 
-    @OneToMany(mappedBy="recipe")
+    @OneToMany(mappedBy="recipe", cascade = CascadeType.ALL)
     public List<Ingredient> ingredients;
 
-    @OneToOne(mappedBy = "recipe")
+    @OneToOne(mappedBy = "recipe", cascade = CascadeType.ALL)
     public RecipePhoto photo;
 }

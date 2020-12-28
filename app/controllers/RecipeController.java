@@ -1,107 +1,133 @@
 package controllers;
 
-import models.entities.Recipe;
-import play.mvc.*;
+import controllers.dto.*;
+import models.entities.*;
+import models.repositories.BaseRepository;
+import java.util.stream.Collectors;
 
-public class RecipeController extends BaseController<Recipe> {
+public class RecipeController extends BaseController<Recipe, RecipeDto> {
 
     protected RecipeController() {
-        super(Recipe.class);
+        super(Recipe.class, RecipeDto.class);
     }
 
-//    public Result GetUser(int id) {
-//        var user = this.GetUserById(id);
-//        if (!user.isPresent())
-//            return notFound();
-//
-//        // return this.GetResponse(ok(Json.toJson(user)));
-//        return this.GetResponse(ok(views.xml.user.render(user.get())));
-//    }
-//
-//    public Result CreateUser(Http.Request request) {
-//        var form = this.formFactory.form(User.class).bindFromRequest(request);
-//
-//        // var json = request.body().asJson();
-//        // var user = Json.fromJson(json, User.class);
-//        var user = form.get();
-//
-//        if (!form.hasErrors())
-//            return badRequest(form.errorsAsJson());
-//
-//        if (!this.IsValid(user))
-//            return badRequest();
-//
-//        if (this.NickAlreadyExist(user.getNick()))
-//            return Results.status(CONFLICT);
-//
-//        this.storage.users.add(user);
-//
-//        return this.GetResponse(created(Json.toJson(user)));
-//    }
-//
-//    public Result UpdateUser(Http.Request request, int id) {
-//        var user = this.GetUserById(id);
-//        if (!user.isPresent())
-//            return notFound();
-//
-//        var json = request.body().asJson();
-//        var newValues = Json.fromJson(json, User.class);
-//
-//        if (!this.IsValid(newValues))
-//            return badRequest();
-//
-//        if (this.NickAlreadyExist(newValues.getNick(), id))
-//            return Results.status(CONFLICT);
-//
-//        var idx = this.storage.users.indexOf(user.get());
-//        this.storage.users.remove(user.get());
-//        this.storage.users.add(idx, newValues);
-//
-//        return this.GetResponse(noContent());
-//    }
-//
-//    public Result DeleteUser(int id) {
-//        var user = this.GetUserById(id);
-//
-//        if (!user.isPresent())
-//            return notFound();
-//
-//        this.storage.users.remove(user.get());
-//        return this.GetResponse(noContent());
-//    }
-//
-//    private boolean IsValid(User user) {
-//        if (user == null)
-//            return false;
-//
-//        if (user.getName() == null || user.getNick() == null || user.getAge() <= 0)
-//            return false;
-//
-//        return true;
-//    }
-//
-//    private Result GetResponse(Result baseResponse) {
-//        return baseResponse.withHeader("X-User-Count", String.valueOf(this.storage.users.size()));
-//    }
-//
-//    private boolean NickAlreadyExist(String nick) {
-//        return this.NickAlreadyExist(nick, 0);
-//    }
-//
-//    private boolean NickAlreadyExist(String nick, int excludeId) {
-//        return this.storage.users.stream()
-//                .filter(u -> u.getNick().equals(nick) && u.id != excludeId)
-//                .findFirst()
-//                .isPresent();
-//    }
-//
-//    private Optional<User> GetUserById(int id) {
-//        if (id == 0)
-//            return Optional.empty();
-//
-//        return this.storage.users.stream()
-//                .filter(u -> u.id == id)
-//                .findFirst();
-//    }
+    @Override
+    protected RecipeDto toDto(Recipe entity) {
+        if (entity == null)
+            return null;
 
+        var dto = new RecipeDto();
+        dto.id = entity.id;
+        dto.name = entity.title;
+        dto.description = entity.description;
+
+        if (entity.categories != null) {
+            dto.categories = entity.categories.stream().map(x -> x.name).collect(Collectors.toList());
+        }
+
+        if (entity.ingredients != null) {
+            dto.ingredients = entity.ingredients.stream().map(x -> {
+                var child = new IngredientDto();
+                child.measure = x.measure.description;
+                child.food = x.food.name;
+                child.quantity = x.quantity;
+                return child;
+            }).collect(Collectors.toList());
+        }
+
+        if (entity.photo != null) {
+            dto.photo = new RecipePhotoDto();
+            dto.photo.title = entity.photo.title;
+            dto.photo.url = entity.photo.url;
+            dto.photo.width = entity.photo.width;
+            dto.photo.height = entity.photo.height;
+        }
+
+        return dto;
+    }
+
+    @Override
+    protected Recipe toEntity(RecipeDto dto) {
+        if (dto == null)
+            return null;
+
+        var entity = new Recipe();
+        entity.id = dto.id;
+        entity.title = dto.name;
+        entity.description = dto.description;
+
+        if (dto.categories != null) {
+            entity.categories = dto.categories.stream().map(this::getCategoryByName).collect(Collectors.toList());
+        }
+
+        if (dto.ingredients != null) {
+            entity.ingredients = dto.ingredients.stream().map(this::getIngredientByIngredientDto).collect(Collectors.toList());
+        }
+
+        if (dto.photo != null) {
+            entity.photo = this.getRecipePhoto(dto.id);
+            entity.photo.title = dto.photo.title;
+            entity.photo.url = dto.photo.url;
+            entity.photo.width = dto.photo.width;
+            entity.photo.height = dto.photo.height;
+        }
+
+        return entity;
+    }
+
+    private Category getCategoryByName(String name) {
+        var repo = new BaseRepository<>(Category.class);
+        var category = repo.finder.query().where().ieq("name", name).findOneOrEmpty();
+
+        if (category.isPresent())
+            return category.get();
+
+        var cat = new Category();
+        cat.name = name;
+        return repo.insert(cat);
+    }
+
+    private Ingredient getIngredientByIngredientDto(IngredientDto dto) {
+        Ingredient ingredient = new Ingredient();
+        ingredient.quantity = dto.quantity;
+        ingredient.food = this.getFoodByName(dto.food);
+        ingredient.measure = this.getMeasureByDescription(dto.measure);
+        
+        return ingredient;
+    }
+
+    private Food getFoodByName(String foodName) {
+        var foodRepo = new BaseRepository<>(Food.class);
+        var food = foodRepo.finder.query().where().ieq("name", foodName).findOneOrEmpty();
+
+        if (food.isPresent())
+            return food.get();
+
+        var newFood = new Food();
+        newFood.name = foodName;
+        return foodRepo.insert(newFood);
+
+    }
+
+    private Measure getMeasureByDescription(String measureDescription) {
+        var measureRepo = new BaseRepository<>(Measure.class);
+        var measure = measureRepo.finder.query().where().ieq("description", measureDescription).findOneOrEmpty();
+
+        if (measure.isPresent())
+            return measure.get();
+
+        var meas = new Measure();
+        meas.description = measureDescription;
+        return measureRepo.insert(meas);
+    }
+
+    private RecipePhoto getRecipePhoto(Long recipeId) {
+        if (recipeId == null || recipeId < 0)
+            return new RecipePhoto();
+
+        var photoRepo = new BaseRepository<>(RecipePhoto.class);
+        var photo = photoRepo.finder.query().fetch("recipe").where().eq("recipe.id", recipeId).findOneOrEmpty();
+
+        return photo.orElse(new RecipePhoto());
+    }
 }
