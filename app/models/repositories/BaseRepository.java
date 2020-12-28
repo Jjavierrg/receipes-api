@@ -36,8 +36,8 @@ public class BaseRepository<T extends BaseModel> {
         return result;
     }
 
-    public T updatePartial(T entity, Long id) {
-        if (!this.existId(id))
+    public T updatePartial(T entity) {
+        if (!this.existId(entity.id))
             return null;
 
         List<Field> fields = new ArrayList<>();

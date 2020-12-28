@@ -2,6 +2,8 @@ package controllers;
 
 import controllers.dto.BaseDto;
 import models.entities.Food;
+import models.entities.Ingredient;
+import models.repositories.BaseRepository;
 
 public class FoodController extends BaseController<Food, BaseDto> {
     protected FoodController() {
@@ -30,5 +32,14 @@ public class FoodController extends BaseController<Food, BaseDto> {
         entity.name = dto.name;
 
         return entity;
+    }
+
+    @Override
+    public boolean canDelete(long id) {
+        // check for related data
+        var repo = new BaseRepository<>(Ingredient.class);
+        var existData = repo.finder.query().fetch("food").where().eq("food.id", id).exists();
+
+        return  !existData;
     }
 }

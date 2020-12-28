@@ -2,6 +2,9 @@ package controllers;
 
 import controllers.dto.CategoryDto;
 import models.entities.Category;
+import models.entities.Ingredient;
+import models.entities.Recipe;
+import models.repositories.BaseRepository;
 
 import java.util.stream.Collectors;
 
@@ -66,5 +69,17 @@ public class CategoryController extends BaseController<Category, CategoryDto> {
         }
 
         return entity;
+    }
+
+    @Override
+    public boolean canDelete(long id) {
+        // check for related data
+        var repo = new BaseRepository<>(Recipe.class);
+        var existRecipes = repo.finder.query().fetch("categories").where().eq("categories.id", id).exists();
+        if (existRecipes)
+            return false;
+
+        // check if category has children
+        return !this.repository.finder.query().fetch("parent").where().eq("parent.id", id).exists();
     }
 }

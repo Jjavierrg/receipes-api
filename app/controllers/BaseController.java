@@ -12,6 +12,7 @@ import play.mvc.Result;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
@@ -68,70 +69,22 @@ public abstract class BaseController<T extends BaseModel, TDto extends BaseDto> 
     }
 
     public Result update(Http.Request request, long id) {
-        if (id <= 0)
-            return badRequest();
-
-        if (!this.repository.existId(id))
-            return notFound();
-
-        var form = this.formFactory.form(this.typeDto).bindFromRequest(request);
-        var dto = form.get();
-
-        if (form.hasErrors())
-            return badRequest(form.errorsAsJson());
-
-        if (dto.id != id)
-            return badRequest();
-
-        var transaction = this.repository.beginTransaction();
-        try {
-            var entity = this.toEntity(dto);
-            this.repository.update(entity);
-            transaction.commit();
-
-            return noContent();
-        } catch (Exception e) {
-            transaction.rollback();
-            return internalServerError(e.getMessage());
-        } finally {
-            transaction.end();
-        }
+        return this.updateInternal(request, id, (x) -> this.repository.update(x));
     }
 
     public Result updatePartial(Http.Request request, long id) {
-        if (id <= 0)
-            return badRequest();
-
-        if (!this.repository.existId(id))
-            return notFound();
-
-        var form = this.formFactory.form(this.typeDto).bindFromRequest(request);
-        var dto = form.get();
-
-        if (form.hasErrors())
-            return badRequest(form.errorsAsJson());
-
-        if (dto.id != id)
-            return badRequest();
-
-        var transaction = this.repository.beginTransaction();
-        try {
-            var entity = this.toEntity(dto);
-            var result = this.repository.updatePartial(entity, id);
-            transaction.commit();
-
-            return noContent();
-        } catch (Exception e) {
-            transaction.rollback();
-            return internalServerError(e.getMessage());
-        } finally {
-            transaction.end();
-        }
+        return this.updateInternal(request, id, (x) -> this.repository.updatePartial(x));
     }
 
     public Result delete(Http.Request request, long id) {
         if (id <= 0)
             return badRequest();
+
+        if (!deletionAllowed(id))
+            return status(METHOD_NOT_ALLOWED);
+
+        if (!canDelete(id))
+            return status(CONFLICT, "Entity already in use");
 
         if (!this.repository.existId(id))
             return notFound();
@@ -150,6 +103,9 @@ public abstract class BaseController<T extends BaseModel, TDto extends BaseDto> 
             transaction.end();
         }
     }
+
+    public boolean deletionAllowed(long id) { return true; }
+    public boolean canDelete(long id) { return true; }
 
     protected abstract TDto toDto(T entity);
     protected abstract T toEntity(TDto dto);
@@ -170,6 +126,37 @@ public abstract class BaseController<T extends BaseModel, TDto extends BaseDto> 
     protected Result getResult(Http.Request request, T entity, int statusCode) {
         var dto = this.toDto(entity);
         return this.getResultInternal(request, dto, statusCode);
+    }
+
+    private Result updateInternal(Http.Request request, long id, Function<T, T> updateFunc) {
+        if (id <= 0)
+            return badRequest();
+
+        if (!this.repository.existId(id))
+            return notFound();
+
+        var form = this.formFactory.form(this.typeDto).bindFromRequest(request);
+        var dto = form.get();
+
+        if (form.hasErrors())
+            return badRequest(form.errorsAsJson());
+
+        if (dto.id != id)
+            return badRequest();
+
+        var transaction = this.repository.beginTransaction();
+        try {
+            var entity = this.toEntity(dto);
+            updateFunc.apply(entity);
+            transaction.commit();
+
+            return noContent();
+        } catch (Exception e) {
+            transaction.rollback();
+            return internalServerError(e.getMessage());
+        } finally {
+            transaction.end();
+        }
     }
 
     private Result getResultInternal(Http.Request request, Object data, int statusCode) {
