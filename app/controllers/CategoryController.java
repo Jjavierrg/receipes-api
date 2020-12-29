@@ -1,9 +1,7 @@
 package controllers;
 
 import controllers.dto.CategoryDto;
-import models.entities.Category;
-import models.entities.Ingredient;
-import models.entities.Recipe;
+import models.entities.*;
 import models.repositories.BaseRepository;
 
 import java.util.stream.Collectors;

@@ -1,6 +1,7 @@
 package controllers;
 
 import controllers.dto.BaseDto;
+import controllers.dto.validators.*;
 import models.entities.BaseModel;
 import models.repositories.BaseRepository;
 import play.api.http.MediaRange;
@@ -11,6 +12,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 
 import javax.inject.Inject;
+import javax.validation.groups.Default;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -47,13 +49,13 @@ public abstract class BaseController<T extends BaseModel, TDto extends BaseDto> 
     }
 
     public Result create(Http.Request request) {
-        var form = this.formFactory.form(this.typeDto).bindFromRequest(request);
-        var dto = form.get();
-
+        var form = this.formFactory.form(this.typeDto, IPostValidator.class, Default.class).bindFromRequest(request);
         if (form.hasErrors())
             return badRequest(form.errorsAsJson());
 
+        var dto = form.get();
         var transaction = this.repository.beginTransaction();
+
         try {
             var entity = this.toEntity(dto);
             var result = this.repository.insert(entity);
@@ -69,11 +71,11 @@ public abstract class BaseController<T extends BaseModel, TDto extends BaseDto> 
     }
 
     public Result update(Http.Request request, long id) {
-        return this.updateInternal(request, id, (x) -> this.repository.update(x));
+        return this.updateInternal(request, id, (x) -> this.repository.update(x), IPutValidator.class, Default.class);
     }
 
     public Result updatePartial(Http.Request request, long id) {
-        return this.updateInternal(request, id, (x) -> this.repository.updatePartial(x));
+        return this.updateInternal(request, id, (x) -> this.repository.updatePartial(x), IPatchValidator.class, Default.class);
     }
 
     public Result delete(Http.Request request, long id) {
@@ -128,19 +130,19 @@ public abstract class BaseController<T extends BaseModel, TDto extends BaseDto> 
         return this.getResultInternal(request, dto, statusCode);
     }
 
-    private Result updateInternal(Http.Request request, long id, Function<T, T> updateFunc) {
+    private Result updateInternal(Http.Request request, long id, Function<T, T> updateFunc, Class<?>... validationGroups) {
         if (id <= 0)
             return badRequest();
 
         if (!this.repository.existId(id))
             return notFound();
 
-        var form = this.formFactory.form(this.typeDto).bindFromRequest(request);
-        var dto = form.get();
+        var form = this.formFactory.form(this.typeDto, validationGroups).bindFromRequest(request);
 
         if (form.hasErrors())
             return badRequest(form.errorsAsJson());
 
+        var dto = form.get();
         if (dto.id != id)
             return badRequest();
 
