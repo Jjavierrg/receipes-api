@@ -1,0 +1,3 @@
+@(recipe: controllers.dto.RecipeDto)
+@_xmlHeader()
+@_recipe(recipe)

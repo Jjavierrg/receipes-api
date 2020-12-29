@@ -1,0 +1,7 @@
+@(recipes: List[controllers.dto.RecipeDto])
+@_xmlHeader()
+<recipes>
+@for(recipe <- recipes) {
+    @_recipe(recipe)
+}
+</recipes>

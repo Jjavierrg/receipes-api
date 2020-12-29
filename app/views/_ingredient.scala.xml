@@ -1,0 +1,6 @@
+@(ingredient: controllers.dto.IngredientDto)
+<ingredient>
+    <quantity>@ingredient.quantity</quantity>
+    <food>@ingredient.food</food>
+    <measure>@ingredient.measure</measure>
+</ingredient>

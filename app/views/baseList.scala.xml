@@ -1,0 +1,7 @@
+@(list: List[controllers.dto.BaseDto], listTag: String, itemTag: String)
+@_xmlHeader()
+<@listTag>
+    @for(item <- list) {
+        @_baseItem(item, itemTag)
+    }
+</@listTag>

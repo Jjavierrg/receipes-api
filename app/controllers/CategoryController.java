@@ -1,9 +1,12 @@
 package controllers;
 
+import controllers.dto.BaseDto;
 import controllers.dto.CategoryDto;
 import models.entities.*;
 import models.repositories.BaseRepository;
+import play.twirl.api.Content;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class CategoryController extends BaseController<Category, CategoryDto> {
@@ -67,6 +70,16 @@ public class CategoryController extends BaseController<Category, CategoryDto> {
         }
 
         return entity;
+    }
+
+    @Override
+    protected Content getXMLListContent(List<CategoryDto> list) {
+        return views.xml.categories.render(list);
+    }
+
+    @Override
+    protected Content getXMLEntityContent(CategoryDto entity) {
+        return views.xml.category.render(entity);
     }
 
     @Override

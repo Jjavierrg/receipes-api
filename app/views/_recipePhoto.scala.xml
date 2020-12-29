@@ -1,0 +1,7 @@
+@(photo: controllers.dto.RecipePhotoDto)
+<photo>
+    <title>@photo.title</title>
+    <url>@photo.url</url>
+    <width>@photo.width</width>
+    <height>@photo.height</height>
+</photo>

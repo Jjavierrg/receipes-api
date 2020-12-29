@@ -10,8 +10,10 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import play.twirl.api.Content;
 
 import javax.inject.Inject;
+import javax.swing.*;
 import javax.validation.groups.Default;
 import java.util.List;
 import java.util.function.Function;
@@ -111,6 +113,8 @@ public abstract class BaseController<T extends BaseModel, TDto extends BaseDto> 
 
     protected abstract TDto toDto(T entity);
     protected abstract T toEntity(TDto dto);
+    protected abstract Content getXMLListContent(List<TDto> list);
+    protected abstract Content getXMLEntityContent(TDto entity);
 
     protected List<TDto> toDto(List<T> entities) {
         return entities.stream().map(this::toDto).collect(Collectors.toList());
@@ -164,17 +168,22 @@ public abstract class BaseController<T extends BaseModel, TDto extends BaseDto> 
     private Result getResultInternal(Http.Request request, Object data, int statusCode) {
         var type = this.getFirstAcceptedType(request);
         if (type.equals("application/xml"))
-            status(statusCode);
+        {
+            var content = data instanceof List<?> ? this.getXMLListContent((List<TDto>) data) : this.getXMLEntityContent((TDto) data);
+            return status(statusCode, content);
+        }
 
         return status(statusCode, Json.toJson(data));
     }
 
     private String getFirstAcceptedType(Http.Request request) {
         for (MediaRange type: request.acceptedTypes()) {
-            if (type.accepts("application/xml"))
-                return "application/xml";
-            else if (type.accepts("application/json"))
+            if (type.toString().equals("*/*"))
+                continue;
+            if (type.accepts("application/json"))
                 return "application/json";
+            else if (type.accepts("application/xml"))
+                return "application/xml";
         }
 
         return "application/json";

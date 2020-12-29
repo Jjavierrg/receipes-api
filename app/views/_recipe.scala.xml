@@ -1,0 +1,16 @@
+@(recipe: controllers.dto.RecipeDto)
+<recipe>
+    <id>@recipe.id</id>
+    <name>@recipe.name</name>
+    <description>@recipe.description</description>
+    @if(recipe.ingredients != null && recipe.ingredients.size() > 0) {
+        <ingredients>
+            @for(ingredient <- recipe.ingredients) {
+            @_ingredient(ingredient)
+            }
+        </ingredients>
+    }
+    @if(recipe.photo != null) {
+        @recipePhoto(recipe.photo)
+    }
+</recipe>

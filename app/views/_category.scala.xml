@@ -1,0 +1,18 @@
+@(category: controllers.dto.CategoryDto, includeParent: Boolean = true, includeChildren: Boolean = true)
+<category>
+    <id>@category.id</id>
+    <name>@category.name</name>
+    @if(includeParent && category.parent != null) {
+        <parent>
+            @_category(category.parent, false, false)
+        </parent>
+    }
+
+    @if(includeChildren && category.children != null && category.children.size() > 0) {
+        <children>
+        @for(child <- category.children) {
+            @_category(child, false, false)
+        }
+        </children>
+    }
+</category>

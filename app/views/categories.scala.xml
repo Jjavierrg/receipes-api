@@ -1,0 +1,7 @@
+@(categories: List[controllers.dto.CategoryDto])
+@_xmlHeader()
+<categories>
+@for(category <- categories) {
+    @_category(category)
+}
+</categories>

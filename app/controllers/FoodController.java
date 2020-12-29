@@ -4,6 +4,9 @@ import controllers.dto.BaseDto;
 import models.entities.Food;
 import models.entities.Ingredient;
 import models.repositories.BaseRepository;
+import play.twirl.api.Content;
+
+import java.util.List;
 
 public class FoodController extends BaseController<Food, BaseDto> {
     protected FoodController() {
@@ -32,6 +35,16 @@ public class FoodController extends BaseController<Food, BaseDto> {
         entity.name = dto.name;
 
         return entity;
+    }
+
+    @Override
+    protected Content getXMLListContent(List<BaseDto> list) {
+        return views.xml.baseList.render(list, "foods", "food");
+    }
+
+    @Override
+    protected Content getXMLEntityContent(BaseDto entity) {
+        return views.xml.baseItem.render(entity, "food");
     }
 
     @Override

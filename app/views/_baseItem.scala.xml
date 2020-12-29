@@ -1,0 +1,5 @@
+@(item: controllers.dto.BaseDto, itemTag: String)
+<@itemTag>
+    <id>@item.id</id>
+    <name>@item.name</name>
+</@itemTag>

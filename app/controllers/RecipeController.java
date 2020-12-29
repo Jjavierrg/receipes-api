@@ -3,6 +3,9 @@ package controllers;
 import controllers.dto.*;
 import models.entities.*;
 import models.repositories.BaseRepository;
+import play.twirl.api.Content;
+
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class RecipeController extends BaseController<Recipe, RecipeDto> {
@@ -73,6 +76,16 @@ public class RecipeController extends BaseController<Recipe, RecipeDto> {
         }
 
         return entity;
+    }
+
+    @Override
+    protected Content getXMLListContent(List<RecipeDto> list) {
+        return views.xml.recipes.render(list);
+    }
+
+    @Override
+    protected Content getXMLEntityContent(RecipeDto entity) {
+        return views.xml.recipe.render(entity);
     }
 
     private Category getCategoryByName(String name) {
