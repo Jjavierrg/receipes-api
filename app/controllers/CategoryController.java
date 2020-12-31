@@ -1,17 +1,26 @@
 package controllers;
 
-import controllers.dto.BaseDto;
 import controllers.dto.CategoryDto;
+import interpreter.ExpressionParser;
+import interpreter.IParser;
 import models.entities.*;
 import models.repositories.BaseRepository;
 import play.twirl.api.Content;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class CategoryController extends BaseController<Category, CategoryDto> {
-    protected CategoryController() {
-        super(Category.class, CategoryDto.class);
+    protected CategoryController() { super(Category.class, CategoryDto.class); }
+
+    @Override
+    protected IParser getParser() {
+        var fieldMapping = new HashMap<String, String>();
+        fieldMapping.put("children.id", "subCategories.id");
+        fieldMapping.put("children.name", "subCategories.name");
+
+        return new ExpressionParser(fieldMapping);
     }
 
     @Override
@@ -23,15 +32,13 @@ public class CategoryController extends BaseController<Category, CategoryDto> {
         dto.id = entity.id;
         dto.name = entity.name;
 
-        if (entity.parent != null)
-        {
+        if (entity.parent != null) {
             dto.parent = new CategoryDto();
             dto.parent.id = entity.parent.id;
             dto.parent.name = entity.parent.name;
         }
 
-        if (entity.subCategories != null)
-        {
+        if (entity.subCategories != null) {
             dto.children = entity.subCategories.stream().map(x -> {
                 var child = new CategoryDto();
                 child.id = x.id;
@@ -52,15 +59,13 @@ public class CategoryController extends BaseController<Category, CategoryDto> {
         entity.id = dto.id;
         entity.name = dto.name;
 
-        if (dto.parent != null)
-        {
+        if (dto.parent != null) {
             entity.parent = new Category();
             entity.parent.id = dto.parent.id;
             entity.parent.name = dto.parent.name;
         }
 
-        if (dto.children != null)
-        {
+        if (dto.children != null) {
             entity.subCategories = dto.children.stream().map(x -> {
                 var child = new Category();
                 child.id = x.id;

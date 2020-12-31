@@ -2,6 +2,8 @@ package controllers;
 
 import controllers.dto.BaseDto;
 import controllers.dto.validators.*;
+import interpreter.ExpressionParser;
+import interpreter.IParser;
 import models.entities.BaseModel;
 import models.repositories.BaseRepository;
 import play.api.http.MediaRange;
@@ -11,10 +13,11 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.twirl.api.Content;
+import services.SearchService;
 
 import javax.inject.Inject;
-import javax.swing.*;
 import javax.validation.groups.Default;
+import java.lang.reflect.MalformedParametersException;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -35,8 +38,16 @@ public abstract class BaseController<T extends BaseModel, TDto extends BaseDto> 
     }
 
     public Result getAll(Http.Request request) {
-        var entities = this.repository.findAll();
-        return this.getResult(request, entities, OK);
+        var searchService = new SearchService(getParser());
+        try {
+            var query = searchService.EvaluateFilters(request, this.repository);
+            var entities = this.repository.findAll(query);
+            return this.getResult(request, entities, OK);
+        } catch (MalformedParametersException|IndexOutOfBoundsException e) {
+            return badRequest("Malformed Query string");
+        } catch (Exception e) {
+            return internalServerError(e.getMessage());
+        }
     }
 
     public Result getSingle(Http.Request request, long id) {
@@ -110,6 +121,8 @@ public abstract class BaseController<T extends BaseModel, TDto extends BaseDto> 
 
     public boolean deletionAllowed(long id) { return true; }
     public boolean canDelete(long id) { return true; }
+
+    protected IParser getParser() { return new ExpressionParser(); }
 
     protected abstract TDto toDto(T entity);
     protected abstract T toEntity(TDto dto);

@@ -1,6 +1,7 @@
 package models.repositories;
 
 import io.ebean.Finder;
+import io.ebean.Query;
 import io.ebean.Transaction;
 import models.entities.BaseModel;
 
@@ -25,6 +26,7 @@ public class BaseRepository<T extends BaseModel> {
     public boolean existId(Long id) { return finder.query().where().eq("id", id).exists(); }
     public T getById(Long id) { return finder.byId(id); }
     public List<T> findAll() { return finder.all(); }
+    public List<T> findAll(Query<T> query) { return query.findList(); }
     public T insert(T entity) { this.finder.db().save(entity); return entity;}
     public T update(T entity) { this.finder.db().update(entity); return entity;}
 

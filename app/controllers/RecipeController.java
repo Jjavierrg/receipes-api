@@ -1,10 +1,13 @@
 package controllers;
 
 import controllers.dto.*;
+import interpreter.ExpressionParser;
+import interpreter.IParser;
 import models.entities.*;
 import models.repositories.BaseRepository;
 import play.twirl.api.Content;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,6 +15,17 @@ public class RecipeController extends BaseController<Recipe, RecipeDto> {
 
     protected RecipeController() {
         super(Recipe.class, RecipeDto.class);
+    }
+
+    @Override
+    protected IParser getParser() {
+        var fieldMapping = new HashMap<String, String>();
+        fieldMapping.put("name", "title");
+        fieldMapping.put("categories", "categories.name");
+        fieldMapping.put("ingredients.measure", "ingredients.measure.description");
+        fieldMapping.put("ingredients.food", "ingredients.food.name");
+
+        return new ExpressionParser(fieldMapping);
     }
 
     @Override
