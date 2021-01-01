@@ -3,6 +3,9 @@ package interpreter;
 import io.ebean.Expr;
 import io.ebean.Expression;
 
+/**
+ * Logical Or operation for filtering
+ */
 public class OrExpression implements IExpression
 {
     IExpression expr1;

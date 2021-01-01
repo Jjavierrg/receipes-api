@@ -1,0 +1,6 @@
+GET     /categories                 controllers.CategoryController.getAll(request: Request)
+GET     /category/:id               controllers.CategoryController.getSingle(request: Request, id: Long)
+POST    /category                   controllers.CategoryController.create(request: Request)
+PUT     /category/:id               controllers.CategoryController.update(request: Request, id: Long)
+PATCH   /category/:id               controllers.CategoryController.updatePartial(request: Request, id: Long)
+DELETE  /category/:id               controllers.CategoryController.delete(request: Request, id: Long)

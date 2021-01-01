@@ -3,6 +3,9 @@ package interpreter;
 import io.ebean.Expr;
 import io.ebean.Expression;
 
+/**
+ * Logical And operation for filtering
+ */
 public class AndExpression implements IExpression
 {
     IExpression expr1;

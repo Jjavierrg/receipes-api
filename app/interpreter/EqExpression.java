@@ -3,6 +3,9 @@ package interpreter;
 import io.ebean.Expr;
 import io.ebean.Expression;
 
+/**
+ * Equal operation for filtering. In case of string, insensitive comparison is applied
+ */
 public class EqExpression extends FinalExpression
 {
     public EqExpression(String propertyName, Object value) {

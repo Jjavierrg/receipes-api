@@ -3,6 +3,9 @@ package controllers.dto;
 import controllers.dto.validators.*;
 import play.data.validation.Constraints;
 
+/**
+ * Dto class for {@link models.entities.Ingredient} model inside recipe.
+ */
 public class IngredientDto {
     @Constraints.Required(groups = {IPutValidator.class, IPostValidator.class})
     @Constraints.Min(1)

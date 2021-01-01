@@ -3,6 +3,9 @@ package interpreter;
 import java.lang.reflect.MalformedParametersException;
 import java.util.*;
 
+/***
+ * Default grammatical parser interface for filtering params
+ */
 public class ExpressionParser implements IParser {
     private final List<String> logical = Arrays.asList("and", "or");
     private Map<String, String> fieldCorrelations;
@@ -19,6 +22,11 @@ public class ExpressionParser implements IParser {
         return getExpressionTree(tokens);
     }
 
+    /**
+     * Get a expression with a tree representation for desired tokens
+     * @param tokens list of elements with which the expression is generated
+     * @return Expression according to token list
+     */
     private IExpression getExpressionTree(List<String> tokens) {
         var tokensToEvaluate = new ArrayList<String>();
         IExpression previousExpession = null;
@@ -46,10 +54,20 @@ public class ExpressionParser implements IParser {
         return getFinalExpression(tokensToEvaluate);
     }
 
+    /**
+     * Check if a token is a expression that is needed to evaluate
+     * @param token token string representation
+     * @return true if token contains a expression. False if token is a final node
+     */
     private boolean isUnaryExpression(String token) {
         return token.startsWith("(") && token.endsWith(")");
     }
 
+    /**
+     * Evaluate a token an get the associated expression
+     * @param token token string representation
+     * @return Associated token expression
+     */
     private IExpression getUnaryExpression(String token) {
         if (!isUnaryExpression(token))
             throw new MalformedParametersException();
@@ -58,6 +76,13 @@ public class ExpressionParser implements IParser {
         return getExpressionTree(tokens);
     }
 
+    /**
+     * Get the corresponding Logical expression according string operator
+     * @param expr1 First side of logical expression
+     * @param expr2 Second side of logical expression
+     * @param operator Logical operator to be applied
+     * @return Logical expression
+     */
     private IExpression getLogicalExpression(IExpression expr1, IExpression expr2, String operator) {
         if (operator.equalsIgnoreCase("and"))
             return new AndExpression(expr1, expr2);
@@ -67,6 +92,11 @@ public class ExpressionParser implements IParser {
             throw new MalformedParametersException();
     }
 
+    /**
+     * Get final filter expression from token list
+     * @param tokens list of tokens to generate final expression
+     * @return According filter expression
+     */
     private IExpression getFinalExpression(List<String> tokens) {
         if (tokens.size() == 1 && isUnaryExpression(tokens.get(0)))
             return getUnaryExpression(tokens.get(0));
@@ -108,6 +138,11 @@ public class ExpressionParser implements IParser {
             throw new MalformedParametersException();
     }
 
+    /**
+     * Split query string into expression parts to be evaluated
+     * @param query query params string
+     * @return list of tokens contained in query param string
+     */
     private List<String> tokenizeString(String query) {
         var result = new ArrayList<String>();
         if (query.isEmpty())
@@ -142,6 +177,13 @@ public class ExpressionParser implements IParser {
         return result;
     }
 
+    /**
+     * Get substring closed between openChar and closeChar taking care about nested occurrences
+     * @param string sting to be evaluated
+     * @param openChar opening tag
+     * @param closeChar closing tag
+     * @return substring contained between opening tag and its closing tag
+     */
     private String getBalancedString(String string, char openChar, char closeChar) {
         if (string.isEmpty())
             return "";

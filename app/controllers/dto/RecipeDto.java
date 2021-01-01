@@ -6,6 +6,9 @@ import play.data.validation.Constraints;
 import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * Dto class for {@link models.entities.Recipe} model
+ */
 public class RecipeDto extends BaseDto {
     @Constraints.Required(groups = {IPutValidator.class, IPostValidator.class})
     @Constraints.MinLength(50)

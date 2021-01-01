@@ -1,5 +1,8 @@
 package interpreter;
 
+/**
+ * Base class for final filter Expression
+ */
 public abstract class FinalExpression implements IExpression
 {
     protected String propertyName;

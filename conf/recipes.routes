@@ -1,0 +1,6 @@
+GET     /recipes                    controllers.RecipeController.getAll(request: Request)
+GET     /recipe/:id                 controllers.RecipeController.getSingle(request: Request, id: Long)
+POST    /recipe                     controllers.RecipeController.create(request: Request)
+PUT     /recipe/:id                 controllers.RecipeController.update(request: Request, id: Long)
+PATCH   /recipe/:id                 controllers.RecipeController.updatePartial(request: Request, id: Long)
+DELETE  /recipe/:id                 controllers.RecipeController.delete(request: Request, id: Long)

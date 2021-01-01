@@ -11,6 +11,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Repository class for data access
+ * @param <T> Type associated to repository
+ */
 public class BaseRepository<T extends BaseModel> {
     private final Class<T> type;
     public final Finder<Long, T> finder;
@@ -20,6 +24,10 @@ public class BaseRepository<T extends BaseModel> {
         this.finder= new Finder<>(type);
     }
 
+    /**
+     * Begin transaction operation
+     * @return {@link io.ebean.Transaction}
+     */
     public Transaction beginTransaction() { return this.finder.db().beginTransaction(); }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
