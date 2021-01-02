@@ -1,6 +1,101 @@
+###
+#  summary: Get All
+#  description: Get all foods stored in database
+#  responses:
+#    200:
+#      description: success
+#      schema:
+#        type: array
+#        items:
+#           $ref: '#/definitions/FoodDto'
+#    400:
+#      description: Bad Request
+###
 GET     /foods                      controllers.FoodController.getAll(request: Request)
+
+###
+#  summary: Get Single
+#  description: Get a specified food stored in database according to its id
+#  responses:
+#    200:
+#      description: success
+#      schema:
+#        $ref: '#/definitions/FoodDto'
+#    400:
+#      description: Bad Request
+#    404:
+#      description: No item found for required id
+###
 GET     /food/:id                   controllers.FoodController.getSingle(request: Request, id: Long)
+
+###
+#  summary: Create
+#  description: Create a new food with specified values
+#  parameters:
+#    - name: body
+#      required: true
+#      description: JSON Object values
+#      schema:
+#        $ref: '#/definitions/FoodDto'
+#  responses:
+#    201:
+#      description: Item created successfully
+#      schema:
+#        $ref: '#/definitions/FoodDto'
+#    400:
+#      description: Bad Request
+###
 POST    /food                       controllers.FoodController.create(request: Request)
+
+###
+#  summary: Update
+#  description: Update desired food with specified object
+#  parameters:
+#    - name: body
+#      required: true
+#      description: JSON Object values
+#      schema:
+#        $ref: '#/definitions/FoodDto'
+#  responses:
+#    204:
+#      description: Item updated successfully
+#    400:
+#      description: Bad Request
+#    404:
+#      description: Not Found
+###
 PUT     /food/:id                   controllers.FoodController.update(request: Request, id: Long)
+
+###
+#  summary: Partial Update
+#  description: Update desired non-null properties with specified values
+#  parameters:
+#    - name: body
+#      required: true
+#      description: JSON Object values
+#      schema:
+#        $ref: '#/definitions/FoodDto'
+#  responses:
+#    204:
+#      description: Item updated successfully
+#    400:
+#      description: Bad Request
+#    404:
+#      description: Not Found
+###
 PATCH   /food/:id                   controllers.FoodController.updatePartial(request: Request, id: Long)
+
+###
+#  summary: Delete
+#  description: Delete a food according to its id
+#  responses:
+#    204:
+#      description: Item deleted successfully
+#    409:
+#      description: Item is already in use
+#    400:
+#      description: Bad Request
+#    404:
+#      description: Not Found
+###
 DELETE  /food/:id                   controllers.FoodController.delete(request: Request, id: Long)

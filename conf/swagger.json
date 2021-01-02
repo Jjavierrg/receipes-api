@@ -10,5 +10,93 @@
   "produces": [
     "application/json",
     "application/xml"
-  ]
+  ],
+  "definitions": {
+    "CategoryDto": {
+      "properties": {
+        "parent": {
+          "$ref": "#/definitions/CategoryDto"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CategoryDto"
+          }
+        },
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "IngredientDto": {
+      "properties": {
+        "quantity": {
+          "type": "integer"
+        },
+        "food": {
+          "type": "string"
+        },
+        "measure": {
+          "type": "string"
+        }
+      }
+    },
+    "RecipePhotoDto": {
+      "properties": {
+        "width": {
+          "type": "integer"
+        },
+        "height": {
+          "type": "integer"
+        },
+        "title": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "RecipeDto": {
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "photo": {
+          "$ref": "#/definitions/RecipePhotoDto"
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ingredients": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/IngredientDto"
+          }
+        }
+      }
+    },
+    "FoodDto": {
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    }
+  }
 }

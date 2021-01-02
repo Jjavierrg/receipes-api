@@ -10,7 +10,7 @@ scalaVersion := "2.13.1"
 libraryDependencies += guice
 
 enablePlugins(PlayEbean)
-swaggerDomainNameSpaces := Seq("models")
+swaggerDomainNameSpaces := Seq("models", "controllers.dto")
 
 libraryDependencies += evolutions
 libraryDependencies += jdbc

@@ -1,6 +1,101 @@
+###
+#  summary: Get All
+#  description: Get all recipes stored in database
+#  responses:
+#    200:
+#      description: success
+#      schema:
+#        type: array
+#        items:
+#           $ref: '#/definitions/RecipeDto'
+#    400:
+#      description: Bad Request
+###
 GET     /recipes                    controllers.RecipeController.getAll(request: Request)
+
+###
+#  summary: Get Single
+#  description: Get a specified recipe stored in database according to its id
+#  responses:
+#    200:
+#      description: success
+#      schema:
+#        $ref: '#/definitions/RecipeDto'
+#    400:
+#      description: Bad Request
+#    404:
+#      description: No item found for required id
+###
 GET     /recipe/:id                 controllers.RecipeController.getSingle(request: Request, id: Long)
+
+###
+#  summary: Create
+#  description: Create a new recipe with specified values
+#  parameters:
+#    - name: body
+#      required: true
+#      description: JSON Object values
+#      schema:
+#        $ref: '#/definitions/RecipeDto'
+#  responses:
+#    201:
+#      description: Item created successfully
+#      schema:
+#        $ref: '#/definitions/RecipeDto'
+#    400:
+#      description: Bad Request
+###
 POST    /recipe                     controllers.RecipeController.create(request: Request)
+
+###
+#  summary: Update
+#  description: Update desired recipe with specified object
+#  parameters:
+#    - name: body
+#      required: true
+#      description: JSON Object values
+#      schema:
+#        $ref: '#/definitions/RecipeDto'
+#  responses:
+#    204:
+#      description: Item updated successfully
+#    400:
+#      description: Bad Request
+#    404:
+#      description: Not Found
+###
 PUT     /recipe/:id                 controllers.RecipeController.update(request: Request, id: Long)
+
+###
+#  summary: Partial Update
+#  description: Update desired non-null properties with specified values
+#  parameters:
+#    - name: body
+#      required: true
+#      description: JSON Object values
+#      schema:
+#        $ref: '#/definitions/RecipeDto'
+#  responses:
+#    204:
+#      description: Item updated successfully
+#    400:
+#      description: Bad Request
+#    404:
+#      description: Not Found
+###
 PATCH   /recipe/:id                 controllers.RecipeController.updatePartial(request: Request, id: Long)
+
+###
+#  summary: Delete
+#  description: Delete a recipe according to its id
+#  responses:
+#    204:
+#      description: Item deleted successfully
+#    409:
+#      description: Item is already in use
+#    400:
+#      description: Bad Request
+#    404:
+#      description: Not Found
+###
 DELETE  /recipe/:id                 controllers.RecipeController.delete(request: Request, id: Long)
