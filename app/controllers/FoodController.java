@@ -8,6 +8,9 @@ import play.twirl.api.Content;
 
 import java.util.List;
 
+/**
+ * Controller for {@link models.entities.Food} model
+ */
 public class FoodController extends BaseController<Food, BaseDto> {
     protected FoodController() {
         super(Food.class, BaseDto.class);

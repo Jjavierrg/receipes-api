@@ -30,15 +30,61 @@ public class BaseRepository<T extends BaseModel> {
      */
     public Transaction beginTransaction() { return this.finder.db().beginTransaction(); }
 
+    /**
+     * Verify if exist a entry of {@link T} with the required id
+     * @param id Primary id of entity
+     * @return true if id exist, otherwise false.
+     */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean existId(Long id) { return finder.query().where().eq("id", id).exists(); }
+
+    /**
+     * Get {@link T} object with the required id
+     * @param id Primary id of entity
+     * @return {@link T} object
+     */
     public T getById(Long id) { return finder.byId(id); }
+
+    /**
+     * Get a {@link List<T>} list with all entries of type {@link T}
+     * @return {@link List<T>}
+     */
     public List<T> findAll() { return finder.all(); }
+
+    /**
+     * Get a {@link List<T>} list with all entries of type {@link T} according to query criteria
+     * @param query query with the criteria to apply to get operation
+     * @return {@link List<T>}
+     */
     public List<T> findAll(Query<T> query) { return query.findList(); }
+
+    /**
+     * Insert a {@link T} into database table
+     * @param entity object to persist into database
+     * @return {@link T} with the updated info
+     */
+
     public T insert(T entity) { this.finder.db().save(entity); return entity;}
+
+    /**
+     * Update a {@link T} into database table
+     * @param entity object to update into database
+     * @return {@link T} with the updated info
+     */
     public T update(T entity) { this.finder.db().update(entity); return entity;}
 
+    /**
+     * Remove the entry row from database table with the requested id
+     * @param id Primary id of entity
+     * @return {@link T} with the updated info
+     */
     public boolean deleteById(Long id) { this.finder.deleteById(id); return true; }
+
+    /**
+     * Remove a {@link T} from database table
+     * @param entity object to remove from database
+     * @return true if was deleted successfully
+     */
     public boolean delete(T entity) {
         var result = this.finder.db().delete(entity);
         //noinspection UnusedAssignment
@@ -46,6 +92,11 @@ public class BaseRepository<T extends BaseModel> {
         return result;
     }
 
+    /**
+     * Update {@link T} not null properties into database table
+     * @param entity object to update into database
+     * @return {@link T} with the updated info
+     */
     public T updatePartial(T entity) {
         if (!this.existId(entity.id))
             return null;

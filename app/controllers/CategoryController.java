@@ -11,6 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Controller for {@link models.entities.Category} model
+ */
 public class CategoryController extends BaseController<Category, CategoryDto> {
     protected CategoryController() { super(Category.class, CategoryDto.class); }
 

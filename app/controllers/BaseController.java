@@ -23,7 +23,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Generic base class for controllers with basic CRUD funcionallity
+ * Generic base class for controllers with basic CRUD functionality
  * @param <T> Model entity associated to controller
  * @param <TDto> DTO representation for model entity
  */
@@ -44,7 +44,7 @@ public abstract class BaseController<T extends BaseModel, TDto extends BaseDto> 
     /**
      * Get all entities and apply query params operations
      * @param request Request made by client
-     * @return Ok with a DTO List representation (according to content negotiation) if success
+     * @return Ok with a {@link List<TDto>} representation (according to content negotiation) if success
      */
     public Result getAll(Http.Request request) {
         var searchService = new SearchService(getParser());
@@ -63,7 +63,7 @@ public abstract class BaseController<T extends BaseModel, TDto extends BaseDto> 
      * Get the entity with the desired Id
      * @param request Request made by client
      * @param id identification number for desired entity
-     * @return Ok with DTO representation (according to content negotiation) if success
+     * @return Ok with {@link TDto} representation (according to content negotiation) if success
      */
     public Result getSingle(Http.Request request, long id) {
         if (id <= 0)
@@ -176,45 +176,45 @@ public abstract class BaseController<T extends BaseModel, TDto extends BaseDto> 
 
     /**
      * Get DTO representation for a entity
-     * @param entity entity model to be converted
-     * @return Dto Representation
+     * @param entity {@link T} object to be converted
+     * @return {@link TDto} Representation
      */
     protected abstract TDto toDto(T entity);
 
     /**
      * Get model entity for a DTO representation
-     * @param dto Dto Representation to be converted
+     * @param dto {@link TDto} object to be converted
      * @return entity model
      */
     protected abstract T toEntity(TDto dto);
 
     /**
-     * Get XML view for a Dto List
+     * Get XML view for a {@link List<TDto>}
      * @param list list of dto associated to view
      * @return Response Content
      */
     protected abstract Content getXMLListContent(List<TDto> list);
 
     /**
-     * Get XML view for a single Dto
+     * Get XML view for a single {@link TDto}
      * @param entity dto associated to view
      * @return Response Content
      */
     protected abstract Content getXMLEntityContent(TDto entity);
 
     /**
-     * Convert operation from entity model list to dto list
-     * @param entities entity model list to be converted
-     * @return DTO list with entity information
+     * Convert operation from {@link List<T>} to {@link List<TDto>}
+     * @param entities {@link List<T>} to be converted
+     * @return {@link List<TDto>} with entity information
      */
     protected List<TDto> toDto(List<T> entities) {
         return entities.stream().map(this::toDto).collect(Collectors.toList());
     }
 
     /**
-     * Convert operation from dto list to entity model list
-     * @param entities DTO list to be converted
-     * @return Model list with entity information
+     * Convert operation from {@link List<TDto>} to {@link List<T>}
+     * @param entities {@link List<TDto>} to be converted
+     * @return {@link List<T>} with entity information
      */
     protected List<T> toEntity(List<TDto> entities) {
         return entities.stream().map(this::toEntity).collect(Collectors.toList());
@@ -248,7 +248,7 @@ public abstract class BaseController<T extends BaseModel, TDto extends BaseDto> 
      * Validate request and perform update operation
      * @param request Request made by client
      * @param id identification number for desired entity
-     * @param updateFunc update function to be applied to model (total or partial)
+     * @param updateFunc update function to be applied to {@link T} (total or partial)
      * @param validationGroups groups to include during entity validation
      * @return Ok with no content status code if success
      */

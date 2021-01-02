@@ -11,6 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Controller for {@link models.entities.Recipe} model
+ */
 public class RecipeController extends BaseController<Recipe, RecipeDto> {
 
     protected RecipeController() {
