@@ -11,6 +11,6 @@
         </ingredients>
     }
     @if(recipe.photo != null) {
-        @recipePhoto(recipe.photo)
+        @_recipePhoto(recipe.photo)
     }
 </recipe>
