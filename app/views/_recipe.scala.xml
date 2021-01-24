@@ -4,11 +4,16 @@
     <name>@recipe.name</name>
     <description>@recipe.description</description>
     @if(recipe.ingredients != null && recipe.ingredients.size() > 0) {
-        <ingredients>
-            @for(ingredient <- recipe.ingredients) {
-            @_ingredient(ingredient)
-            }
-        </ingredients>
+    <ingredients>
+        @for(ingredient <- recipe.ingredients) {
+        @_ingredient(ingredient)
+        }
+    </ingredients>
+    <categories>
+        @for(cat <- recipe.categories) {
+        <category>@cat</category>
+        }
+    </categories>
     }
     @if(recipe.photo != null) {
         @_recipePhoto(recipe.photo)

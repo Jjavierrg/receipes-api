@@ -1,5 +1,3 @@
 @(category: controllers.dto.CategoryDto)
 @_xmlHeader()
-<category>
-    @_category(category)
-</category>
+@_category(category)
