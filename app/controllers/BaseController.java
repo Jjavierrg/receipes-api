@@ -305,7 +305,7 @@ public class BaseController<T extends BaseModel, TDto extends BaseDto> extends C
         var type = this.getFirstAcceptedType(request);
         var converter = this.converterFactory.getConverter(this.typeDto, type);
 
-        return = data instanceof List<?> ? converter.toResult(statusCode, (List<TDto>) data) : converter.toResult(statusCode, (TDto) data);
+        return data instanceof List<?> ? converter.toResult(statusCode, (List<TDto>) data) : converter.toResult(statusCode, (TDto) data);
     }
 
     /**

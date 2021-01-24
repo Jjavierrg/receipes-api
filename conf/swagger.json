@@ -5,7 +5,8 @@
     "description": "Recipe API Management for MIMO evaluation"
   },
   "consumes": [
-    "application/json"
+    "application/jsonjson",
+    "application/xml"
   ],
   "produces": [
     "application/json",
