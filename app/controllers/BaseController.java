@@ -3,7 +3,6 @@ package controllers;
 import controllers.dto.BaseDto;
 import controllers.dto.validators.*;
 import converters.ConverterFactory;
-import converters.IConverter;
 import interpreter.ExpressionParser;
 import interpreter.IParser;
 import mappers.IMapper;
@@ -16,7 +15,6 @@ import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
-import play.twirl.api.Content;
 import services.SearchService;
 
 import javax.inject.Inject;
@@ -103,7 +101,7 @@ public class BaseController<T extends BaseModel, TDto extends BaseDto> extends C
      * @return Ok with created status code if success
      */
     public Result create(Http.Request request) {
-        var form = this.getFormFromRequest(request);
+        var form = this.formFactory.form(this.typeDto, IPostValidator.class, Default.class).bindFromRequest(request);
 
         if (form.hasErrors())
             return badRequest(form.errorsAsJson());
@@ -269,7 +267,7 @@ public class BaseController<T extends BaseModel, TDto extends BaseDto> extends C
         if (!this.getRepository().existId(id))
             return notFound();
 
-        var form = this.getFormFromRequest(request);
+        var form = this.formFactory.form(this.typeDto, IPutValidator.class, Default.class).bindFromRequest(request);
 
         if (form.hasErrors())
             return badRequest(form.errorsAsJson());
@@ -332,12 +330,13 @@ public class BaseController<T extends BaseModel, TDto extends BaseDto> extends C
      *
      * @param request Http request made by client
      * @return {@link Form<TDto>}
+     * @deprecated Validation seems not working
      */
-    private Form<TDto> getFormFromRequest(Http.Request request) {
+    private Form<TDto> getFormFromRequest(Http.Request request, Class<?>... groups) {
         var requestContentType = request.contentType().orElse("application/json");
         var converter = this.converterFactory.getConverter(this.typeDto, requestContentType);
 
         var dto = converter.toEntity(request.body());
-        return this.formFactory.form(this.typeDto, IPostValidator.class, Default.class).fill(dto);
+        return this.formFactory.form(this.typeDto, groups).fill(dto);
     }
 }
