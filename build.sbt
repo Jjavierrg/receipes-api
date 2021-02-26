@@ -18,6 +18,7 @@ libraryDependencies += jdbc
 libraryDependencies += "org.webjars" % "swagger-ui" % "3.35.0"
 
 libraryDependencies += "com.h2database" % "h2" % "1.4.200"
+libraryDependencies += "org.postgresql" % "postgresql" % "42.2.16"
 libraryDependencies += "org.glassfish.jaxb" % "jaxb-core" % "2.3.0.1"
 libraryDependencies += "org.glassfish.jaxb" % "jaxb-runtime" % "2.3.2"
 libraryDependencies ++= Seq(ehcache)
