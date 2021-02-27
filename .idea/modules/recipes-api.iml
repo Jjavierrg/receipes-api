@@ -25,6 +25,7 @@
       <excludeFolder url="file://$MODULE_DIR$/../../target/swagger" />
       <excludeFolder url="file://$MODULE_DIR$/../../target/task-temp-directory" />
       <excludeFolder url="file://$MODULE_DIR$/../../target" />
+      <excludeFolder url="file://$MODULE_DIR$/../../target/universal" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -130,7 +131,7 @@
     <orderEntry type="library" name="sbt: org.avaje:avaje-classpath-scanner-api:2.2:jar" level="project" />
     <orderEntry type="library" name="sbt: org.avaje:avaje-classpath-scanner:3.1.1:jar" level="project" />
     <orderEntry type="library" scope="TEST" name="sbt: org.brotli:dec:0.1.2:jar" level="project" />
-    <orderEntry type="library" name="sbt: org.checkerframework:checker-qual:2.10.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.checkerframework:checker-qual:3.5.0:jar" level="project" />
     <orderEntry type="library" scope="TEST" name="sbt: org.eclipse.jetty.websocket:websocket-api:9.4.20.v20190813:jar" level="project" />
     <orderEntry type="library" scope="TEST" name="sbt: org.eclipse.jetty.websocket:websocket-client:9.4.20.v20190813:jar" level="project" />
     <orderEntry type="library" scope="TEST" name="sbt: org.eclipse.jetty.websocket:websocket-common:9.4.20.v20190813:jar" level="project" />
@@ -150,6 +151,7 @@
     <orderEntry type="library" name="sbt: org.jboss.logging:jboss-logging:3.3.2.Final:jar" level="project" />
     <orderEntry type="library" name="sbt: org.jvnet.staxex:stax-ex:1.8.1:jar" level="project" />
     <orderEntry type="library" name="sbt: org.lz4:lz4-java:1.7.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.postgresql:postgresql:42.2.16:jar" level="project" />
     <orderEntry type="library" name="sbt: org.reactivestreams:reactive-streams:1.0.3:jar" level="project" />
     <orderEntry type="library" name="sbt: org.reflections:reflections:0.9.11:jar" level="project" />
     <orderEntry type="library" name="sbt: org.scala-lang.modules:scala-java8-compat_2.13:0.9.1:jar" level="project" />

@@ -4,7 +4,7 @@
 # --- !Ups
 
 create table category (
-  id                            bigint auto_increment not null,
+  id                            serial,
   name                          varchar(255),
   parent_id                     bigint,
   version                       bigint not null,
@@ -14,7 +14,7 @@ create table category (
 );
 
 create table food (
-  id                            bigint auto_increment not null,
+  id                            serial,
   name                          varchar(255),
   version                       bigint not null,
   creation_date                 timestamp not null,
@@ -23,7 +23,7 @@ create table food (
 );
 
 create table ingredient (
-  id                            bigint auto_increment not null,
+  id                            serial,
   quantity                      integer not null,
   food_id                       bigint,
   measure_id                    bigint,
@@ -35,7 +35,7 @@ create table ingredient (
 );
 
 create table measure (
-  id                            bigint auto_increment not null,
+  id                            serial,
   description                   varchar(255),
   version                       bigint not null,
   creation_date                 timestamp not null,
@@ -44,7 +44,7 @@ create table measure (
 );
 
 create table recipe (
-  id                            bigint auto_increment not null,
+  id                            serial,
   title                         varchar(255),
   description                   TEXT,
   version                       bigint not null,
@@ -60,7 +60,7 @@ create table recipe_category (
 );
 
 create table recipe_photo (
-  id                            bigint auto_increment not null,
+  id                            serial,
   title                         varchar(255),
   url                           varchar(255),
   width                         integer not null,

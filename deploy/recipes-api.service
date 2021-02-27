@@ -1,0 +1,12 @@
+[Unit]
+Description="MIMO Recipes API"
+
+[Service]
+WorkingDirectory=/opt/recipes-api
+ExecStart=/opt/recipes-api/bin/recipes-api -Dconfig.file=/opt/recipes-api/conf/prod.conf
+ExecStop=/bin/kill -TERM $MAINPID
+Type=simple
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

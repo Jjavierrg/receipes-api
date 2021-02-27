@@ -1,3 +1,3 @@
-#!/usr/bin/env bash
+provisioners#!/usr/bin/env bash
 
 ./sbt-dist/bin/sbt "$@"
