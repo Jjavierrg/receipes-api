@@ -88,8 +88,9 @@ resource "aws_autoscaling_group" "recipes_api_asg" {
   target_group_arns = [aws_lb_target_group.recipes_api_tg.arn]
   health_check_type = "ELB"
 
-  min_size = 2
-  max_size = 2
+  min_size = 1
+  max_size = 5
+  desired_capacity = 2
 
   tag {
     key = "Name"
