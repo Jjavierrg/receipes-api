@@ -130,9 +130,9 @@ resource "aws_lb_target_group" "recipes_api_tg" {
   vpc_id = data.aws_vpc.default.id
 
   health_check {
-    path = "/"
+    path = "/healthcheck"
     protocol = "HTTP"
-    matcher = "200"
+    matcher = "200-499"
     interval = 15
     timeout = 5
     healthy_threshold = 3

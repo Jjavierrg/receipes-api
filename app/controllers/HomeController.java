@@ -18,4 +18,11 @@ public class HomeController extends Controller {
         return redirect("/docs/swagger-ui/index.html?url=/assets/swagger.json");
     }
 
+    /**
+     * Api endpoint for health check.
+     */
+    public Result healthcheck() {
+        return ok("alive");
+    }
+
 }

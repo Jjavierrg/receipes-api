@@ -5,6 +5,7 @@
 # An example controller showing a sample home page
 ### NoDocs ###
 GET     /                           controllers.HomeController.index
+GET     /healthcheck                controllers.HomeController.healthcheck
 ->      /                           recipes.Routes
 ->      /                           foods.Routes
 ->      /                           categories.Routes
