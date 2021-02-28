@@ -12,7 +12,10 @@
         "source_ami": "ami-0932440befd74cdba",
         "instance_type": "t2.micro",
         "ssh_username": "ubuntu",
-        "ami_name": "recipes-api {{timestamp}}"
+        "ami_name": "recipes-api {{timestamp}}",
+        "tags": {
+          "Application": "recipes-api"
+        }
       }
     ],
     "provisioners": [
@@ -36,7 +39,7 @@
         "unzip ./recipes-api-1.0-SNAPSHOT.zip",
         "sudo mv ./recipes-api-1.0-SNAPSHOT /opt/recipes-api",
         "rm recipes-api-1.0-SNAPSHOT.zip",
-        "sudo cp /home/ubuntu/recipes-api.service /etc/systemd/system",
+        "sudo mv /home/ubuntu/recipes-api.service /etc/systemd/system",
         "sudo systemctl daemon-reload",
         "sudo systemctl enable recipes-api.service"
       ]

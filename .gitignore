@@ -124,3 +124,12 @@ server.pid
 .cache
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,playframework
+
+### Terraform ###
+# Local .terraform directories
+**/.terraform/*
+*.terraform.lock.hcl
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
