@@ -18,6 +18,7 @@
       <sourceFolder url="file://$MODULE_DIR$/../../test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/../../target/scala-2.13/twirl/main" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/../../target/scala-2.13/twirl/main" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../test/resources" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../../target/swagger" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/../../target/streams" />
       <excludeFolder url="file://$MODULE_DIR$/../../target/web" />
